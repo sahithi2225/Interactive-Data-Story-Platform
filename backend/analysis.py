@@ -210,16 +210,15 @@ def predict_trend(df: pd.DataFrame) -> Dict[str, Any] | None:
     dt = [c for c, t in types.items() if t == "datetime"]
     if not num:
         return None
-    from sklearn.linear_model import LinearRegression
     if dt:
         d = df[[dt[0], num[0]]].dropna().sort_values(dt[0])
         if len(d) < 5:
             return None
-        x = np.arange(len(d)).reshape(-1, 1)
+        x = np.arange(len(d))
         y = d[num[0]].values
-        model = LinearRegression().fit(x, y)
-        future_x = np.arange(len(d), len(d) + 10).reshape(-1, 1)
-        future_y = model.predict(future_x)
+        coeffs = np.polyfit(x, y, 1)
+        future_x = np.arange(len(d), len(d) + 10)
+        future_y = np.polyval(coeffs, future_x)
         history = [{"name": str(d[dt[0]].iloc[i].date() if hasattr(d[dt[0]].iloc[i], 'date') else d[dt[0]].iloc[i]),
                     "value": float(y[i]), "type": "actual"} for i in range(len(d))]
         future = [{"name": f"+{i+1}", "value": float(future_y[i]), "type": "forecast"} for i in range(10)]

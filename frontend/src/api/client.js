@@ -1,6 +1,5 @@
 import axios from 'axios'
-const baseURL = import.meta.env.VITE_API_URL || '/api'
-const client = axios.create({ baseURL })
+const client = axios.create({ baseURL: '/api' })
 client.interceptors.request.use((cfg) => {
   const t = localStorage.getItem('idsp_token') || sessionStorage.getItem('idsp_token')
   if (t) cfg.headers.Authorization = `Bearer ${t}`

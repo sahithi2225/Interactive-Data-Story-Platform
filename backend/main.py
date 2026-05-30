@@ -12,6 +12,7 @@ from security import hash_password, verify_password, create_access_token, get_cu
 from config import UPLOAD_DIR, MAX_UPLOAD_MB
 import analysis, pdf_report, sample_data, ai_chat
 import pandas as pd
+import tempfile
 
 Base.metadata.create_all(bind=engine)
 
@@ -162,3 +163,6 @@ def chat(ds_id: int, body: dict,
 @app.get("/api/health")
 def health():
     return {"status": "ok"}
+
+UPLOAD_DIR = Path(tempfile.gettempdir())/"uploads"
+UPLOAD_DIR.mkdir(exist_ok=True)
